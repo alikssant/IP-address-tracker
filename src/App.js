@@ -2,13 +2,17 @@ export default function App() {
   return (
     <div className="main">
       <Header />
-      <Search />
     </div>
   );
 }
 
 function Header() {
-  return <h3 className="header">IP Address Tracker</h3>;
+  return (
+    <div className="header">
+      <h3>IP Address Tracker</h3>
+      <Search />
+    </div>
+  );
 }
 
 function Search() {
