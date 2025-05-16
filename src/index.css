@@ -75,3 +75,38 @@
   background-size: contain;
   height: calc(100vh - 220px);
 }
+
+.ip-display-box {
+  width: 90%;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+
+  max-width: 1100px;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.header-ip-display {
+  margin: 10px 0;
+  flex: 1;
+  padding: 10px;
+  border-right: 1px solid var(--dark-gray);
+}
+
+.ip-title {
+  color: var(--dark-gray);
+  font-weight: var(--font-weight-bold);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.ip-result {
+  display: block;
+  margin-top: 10px;
+  font-size: x-large;
+  font-weight: var(--font-weight-medium);
+  color: black;
+}
