@@ -2,6 +2,7 @@ export default function App() {
   return (
     <div className="main">
       <Header />
+      <div className="map-container"></div>
     </div>
   );
 }
@@ -17,10 +18,15 @@ function Header() {
 
 function Search() {
   return (
-    <input
-      className="search"
-      type="text"
-      placeholder="Search for any IP address or domain"
-    ></input>
+    <div className="search-form">
+      <input
+        className="search"
+        type="text"
+        placeholder="Search for any IP address or domain"
+      />
+      <button className="arrow-button">
+        <img src="/images/icon-arrow.svg" alt="arrow icon" />
+      </button>
+    </div>
   );
 }
