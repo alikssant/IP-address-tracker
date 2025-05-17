@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const KEY = process.env.REACT_APP_API_KEY;
 const demoApi = "1.35.67.88";
@@ -40,6 +43,7 @@ export default function App() {
     <div className="main">
       <Header ipData={ipData} error={error} loading={loading} />
       <div className="map-container"></div>
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 }
@@ -56,7 +60,6 @@ function Header({ ipData, error, loading }) {
 
 function Search({ onSearch }) {
   const [input, setInput] = useState("");
-  const [error, setError] = useState("");
 
   const isValidInput = (value) => {
     const ipRegex =
@@ -67,14 +70,12 @@ function Search({ onSearch }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!isValidInput(input)) {
-      setError(
-        "Please enter a valid IPv4 or domain (e.g. 8.8.8.8 or google.com)"
-      );
+      toast.error("❌ Invalid IP address or domain.");
       return;
     }
 
-    setError("");
     onSearch(input);
   };
 
@@ -90,7 +91,6 @@ function Search({ onSearch }) {
       <button className="arrow-button" type="submit">
         <img src="/images/icon-arrow.svg" alt="arrow icon" />
       </button>
-      {error && <p style={{ color: "red", fontSize: "13px" }}>{error}</p>}
     </form>
   );
 }
