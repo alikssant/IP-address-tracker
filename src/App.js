@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const KEY = process.env.REACT_APP_API_KEY;
-const demoApi = "11.235.7.145";
+const demoApi = "1.35.67.88";
 
 // fetch(`https://geo.ipify.org/api/v2/country?apiKey=${KEY}&ipAddress=${demoApi}`)
 //   .then((res) => res.json())
@@ -54,18 +54,44 @@ function Header({ ipData, error, loading }) {
   );
 }
 
-function Search() {
+function Search({ onSearch }) {
+  const [input, setInput] = useState("");
+  const [error, setError] = useState("");
+
+  const isValidInput = (value) => {
+    const ipRegex =
+      /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+    const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return ipRegex.test(value) || domainRegex.test(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!isValidInput(input)) {
+      setError(
+        "Please enter a valid IPv4 or domain (e.g. 8.8.8.8 or google.com)"
+      );
+      return;
+    }
+
+    setError("");
+    onSearch(input);
+  };
+
   return (
-    <div className="search-form">
+    <form className="search-form" onSubmit={handleSubmit}>
       <input
         className="search"
         type="text"
         placeholder="Search for any IP address or domain"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       />
-      <button className="arrow-button">
+      <button className="arrow-button" type="submit">
         <img src="/images/icon-arrow.svg" alt="arrow icon" />
       </button>
-    </div>
+      {error && <p style={{ color: "red", fontSize: "13px" }}>{error}</p>}
+    </form>
   );
 }
 
