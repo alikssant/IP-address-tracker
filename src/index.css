@@ -19,6 +19,10 @@
   font-family: var(--font-primary);
 }
 
+body {
+  overflow-x: hidden;
+}
+
 .header {
   color: #fff;
   font-weight: var(--font-weight-medium);
@@ -31,6 +35,15 @@
   flex-direction: column;
   justify-content: start;
   align-items: center;
+  padding: 0 20px;
+}
+
+/* Mobile background */
+@media (max-width: 768px) {
+  .header {
+    background-image: url(/public/images/pattern-bg-mobile.png);
+    height: 300px;
+  }
 }
 
 .header h3 {
@@ -57,6 +70,7 @@
   cursor: pointer;
   border-radius: 12px;
 }
+
 .arrow-button {
   width: 50px;
   height: 100%;
@@ -68,9 +82,9 @@
   right: 0;
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
-
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .arrow-button:hover {
   transform: scale(1.08);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -78,32 +92,69 @@
 
 .map-container {
   background-image: url(/public/images/img23.jpg);
-  background-size: contain;
+  background-size: cover;
+  background-position: center;
   height: calc(100vh - 280px);
+  width: 100%;
 }
 
 .ip-display-box {
   width: 90%;
-  height: 280px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 40px;
   max-width: 1100px;
   background-color: #fff;
   border-radius: 12px;
-  padding: 20px;
-  text-align: center;
+  padding: 30px 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  /* position: relative;
+  z-index: 10; */
+}
+
+/* Responsive layout for the IP display box */
+@media (max-width: 768px) {
+  .ip-display-box {
+    flex-direction: column;
+    padding: 20px 15px;
+    text-align: center;
+    height: auto;
+    margin-top: 20px;
+  }
+
+  .map-container {
+    height: calc(100vh - 500px);
+    min-height: 300px;
+  }
 }
 
 .header-ip-display {
-  margin: 10px 0;
   flex: 1;
   padding: 10px;
-  border-right: 1px solid var(--dark-gray);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.header-ip-display:last-child {
-  border-right: none;
+
+/* For desktop and larger screens */
+@media (min-width: 769px) {
+  .header-ip-display:not(:last-child) {
+    border-right: 1px solid var(--dark-gray);
+  }
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+  .header-ip-display {
+    margin: 10px 0;
+    padding: 10px 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .header-ip-display:last-child {
+    border-bottom: none;
+  }
 }
 
 .ip-title {
@@ -111,12 +162,39 @@
   font-weight: var(--font-weight-bold);
   font-size: 12px;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
 }
 
 .ip-result {
   display: block;
-  margin-top: 10px;
-  font-size: x-large;
+  font-size: 18px;
   font-weight: var(--font-weight-medium);
-  color: black;
+  color: var(--very-dark-gray);
+}
+
+/* Adjust font size for different screen sizes */
+@media (min-width: 992px) {
+  .ip-result {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ip-result {
+    font-size: 16px;
+  }
+
+  .header h3 {
+    font-size: 20px;
+  }
+
+  .search {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .arrow-button {
+    width: 40px;
+  }
 }
