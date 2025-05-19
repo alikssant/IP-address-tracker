@@ -4,23 +4,45 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
 const KEY = process.env.REACT_APP_API_KEY;
-const demoApi = "1.35.67.88";
-
-// fetch(`https://geo.ipify.org/api/v2/country?apiKey=${KEY}&ipAddress=${demoApi}`)
-//   .then((res) => res.json())
-//   .then((data) => console.log(data));
 
 export default function App() {
+  const [ipAddress, setIpAddress] = useState(""); // State to store the user input IP
   const [ipData, setIpData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const handleSearch = (searchInput) => {
+    setIpAddress(searchInput);
+  };
+
+  // Initial fetch of user's own IP address when the component mounts
+  useEffect(() => {
+    const getUserIP = async () => {
+      try {
+        const response = await fetch(`https://api.ipify.org?format=json`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setIpAddress(data.ip);
+      } catch (err) {
+        console.error("Failed to detect user IP:", err);
+      }
+    };
+
+    if (!ipAddress) {
+      getUserIP();
+    }
+  });
+
   useEffect(() => {
     const fetchIpData = async () => {
+      if (!ipAddress) return;
+
       try {
         setLoading(true);
         const response = await fetch(
-          `https://geo.ipify.org/api/v2/country?apiKey=${KEY}&ipAddress=${demoApi}`
+          `https://geo.ipify.org/api/v2/country?apiKey=${KEY}&ipAddress=${ipAddress}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -37,22 +59,27 @@ export default function App() {
     };
 
     fetchIpData();
-  }, []);
+  }, [ipAddress]); // Re-run the effect when ipAddress changes
 
   return (
     <div className="main">
-      <Header ipData={ipData} error={error} loading={loading} />
+      <Header
+        ipData={ipData}
+        error={error}
+        loading={loading}
+        onSearch={handleSearch}
+      />
       <div className="map-container"></div>
       <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 }
 
-function Header({ ipData, error, loading }) {
+function Header({ ipData, error, loading, onSearch }) {
   return (
     <div className="header">
       <h3>IP Address Tracker</h3>
-      <Search />
+      <Search onSearch={onSearch} />
       <DisplayIp ipData={ipData} error={error} loading={loading} />
     </div>
   );
@@ -72,7 +99,7 @@ function Search({ onSearch }) {
     e.preventDefault();
 
     if (!isValidInput(input)) {
-      toast.error("❌ Invalid IP address or domain.");
+      toast.error("❌ Invalid IP address.");
       return;
     }
 
