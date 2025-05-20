@@ -36,6 +36,8 @@ body {
   justify-content: start;
   align-items: center;
   padding: 0 20px;
+  position: relative;
+  z-index: 10;
 }
 
 /* Mobile background */
@@ -91,11 +93,32 @@ body {
 }
 
 .map-container {
-  background-image: url(/public/images/img23.jpg);
-  background-size: cover;
-  background-position: center;
   height: calc(100vh - 280px);
   width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  font-family: var(--font-primary);
+}
+
+.leaflet-popup-content {
+  font-weight: var(--font-weight-medium);
+  padding: 5px;
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    height: calc(100vh - 100px);
+    min-height: 300px;
+  }
 }
 
 .ip-display-box {
@@ -108,11 +131,13 @@ body {
   border-radius: 12px;
   padding: 30px 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  /* position: relative;
-  z-index: 10; */
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -80px;
 }
 
-/* Responsive layout for the IP display box */
 @media (max-width: 768px) {
   .ip-display-box {
     flex-direction: column;
@@ -120,11 +145,7 @@ body {
     text-align: center;
     height: auto;
     margin-top: 20px;
-  }
-
-  .map-container {
-    height: calc(100vh - 500px);
-    min-height: 300px;
+    bottom: -160px;
   }
 }
 
@@ -136,14 +157,12 @@ body {
   justify-content: center;
 }
 
-/* For desktop and larger screens */
 @media (min-width: 769px) {
   .header-ip-display:not(:last-child) {
     border-right: 1px solid var(--dark-gray);
   }
 }
 
-/* For mobile devices */
 @media (max-width: 768px) {
   .header-ip-display {
     margin: 10px 0;
@@ -173,7 +192,6 @@ body {
   color: var(--very-dark-gray);
 }
 
-/* Adjust font size for different screen sizes */
 @media (min-width: 992px) {
   .ip-result {
     font-size: 22px;
