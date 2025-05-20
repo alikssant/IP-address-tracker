@@ -22,7 +22,7 @@ Users should be able to:
 ### Links
 
 - Solution URL: [Source code](https://github.com/alikssant/IP-address-tracker)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Live Site URL: [Demo-site](https://ip-tracker-challenge2.netlify.app/)
 
 ## My process
 
