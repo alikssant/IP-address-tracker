@@ -1,12 +1,61 @@
 import { useState, useEffect } from "react";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { toast } from "react-toastify";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 const KEY = process.env.REACT_APP_API_KEY;
 
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
+// Component to update the map view when position changes
+function ChangeMapView({ position }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (position) {
+      map.flyTo(position, 13, {
+        animate: true,
+        duration: 1.5,
+      });
+    }
+  }, [map, position]);
+
+  return null;
+}
+
+// Map component
+function MapComponent({ position }) {
+  return (
+    <MapContainer
+      center={position}
+      zoom={13}
+      style={{ height: "100%", width: "100%" }}
+      zoomControl={false}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <Marker position={position}>
+        <Popup>Location found based on IP</Popup>
+      </Marker>
+      <ChangeMapView position={position} />
+    </MapContainer>
+  );
+}
+
 export default function App() {
-  const [ipAddress, setIpAddress] = useState(""); // State to store the user input IP
+  const [ipAddress, setIpAddress] = useState("");
   const [ipData, setIpData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,9 +73,11 @@ export default function App() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        // Set the detected IP as the current ipAddress
         setIpAddress(data.ip);
       } catch (err) {
         console.error("Failed to detect user IP:", err);
+        // Fall back to empty string - the main API call will handle this
       }
     };
 
@@ -42,7 +93,7 @@ export default function App() {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://geo.ipify.org/api/v2/country?apiKey=${KEY}&ipAddress=${ipAddress}`
+          `https://geo.ipify.org/api/v2/country,city?apiKey=${KEY}&ipAddress=${ipAddress}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -59,7 +110,12 @@ export default function App() {
     };
 
     fetchIpData();
-  }, [ipAddress]); // Re-run the effect when ipAddress changes
+  }, [ipAddress]);
+
+  const location = ipData?.location;
+  const position = location
+    ? [location.lat, location.lng]
+    : [34.0522, -118.2437];
 
   return (
     <div className="main">
@@ -69,7 +125,9 @@ export default function App() {
         loading={loading}
         onSearch={handleSearch}
       />
-      <div className="map-container"></div>
+      <div id="map" className="map-container">
+        {ipData && <MapComponent position={position} />}
+      </div>
       <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
@@ -150,7 +208,8 @@ function DisplayIp({ ipData, error, loading }) {
       <div className="header-ip-display">
         <div className="ip-title">Location</div>
         <span className="ip-result">
-          {ipData.location.region}, {ipData.location.country}
+          {ipData.location.city}, {ipData.location.region},{" "}
+          {ipData.location.country}
         </span>
       </div>
       <div className="header-ip-display">
